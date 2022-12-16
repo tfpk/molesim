@@ -1,0 +1,20 @@
+[package]
+name = "molesim"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "molesim_lib"
+path = "src/lib.rs"
+
+
+[[bin]]
+name = "molesim_main"
+path = "src/main.rs"
+
+[dependencies]
+tracing-subscriber = "0.3"
+glam = "0.22.0"
+rand = "0.8.5"
+eframe = "0.20.1"
+rayon = "1.6.1"
