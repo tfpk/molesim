@@ -10,9 +10,9 @@ use glam::DVec2;
 pub const WIDTH: f64 = 1920.0;
 pub const HEIGHT: f64 = 1080.0;
 
-pub const NUM_MOLECULES: usize = 10_000;
-pub const MOLECULE_SPEED: f64 = 5.0;
-pub const MOLECULE_RADIUS: f64 = 2.0;
+pub const NUM_MOLECULES: usize = 200;
+pub const MOLECULE_SPEED: f64 = 10.0;
+pub const MOLECULE_RADIUS: f64 = 5.0;
 
 pub const BOUNDARY_RATIO: f64 = 0.2;
 pub const M: f64 = MOLECULE_SPEED * BOUNDARY_RATIO;
@@ -92,7 +92,7 @@ impl Molecule {
     fn create_random(id: usize) -> Molecule {
         let mut rng = thread_rng();
         let rand_angle = rng.gen_range(0.0..TAU);
-        let rand_vector = DVec2::from_angle(rand_angle);
+        let rand_vector = DVec2::from_angle(rand_angle) * MOLECULE_SPEED.sqrt();
         Molecule {
             position: DVec2 {
                 x: rng.gen_range(0.0..WIDTH),
@@ -129,6 +129,7 @@ impl Molecules {
 
         molecules.par_iter_mut().for_each(|b| {
             for ob in &cloned_molecules {
+                if ob.id == b.id { continue }
                 let diff_vec = ob.position - b.position; //raw relative position vector.
                 let dist_sq = diff_vec.length() * diff_vec.length(); // cenre spacing  scalar
                                                                      // You can't normalize a zero vector. The best we can do is skip this case.
@@ -140,9 +141,11 @@ impl Molecules {
                 if dist_sq > req_dist_sq {
                     continue;
                 }; //not colliding
+                //
+                println!("old {}: p: {}, v: {}", b.id, b.position, b.velocity);
 
                 let norm_unit = diff_vec.normalize(); // unit vector of relative position
-                let tang_unit = DVec2::new(-norm_unit[1], norm_unit[0]);
+                let tang_unit = DVec2::new(-norm_unit.y, norm_unit.x);
 
                 let dist = dist_sq.sqrt();
                 /*----move them back to the collision point----*/
@@ -162,6 +165,7 @@ impl Molecules {
                 // let new_moleculeb_tang_vec = tang_unit * moleculeb_tang;
                 b.velocity = new_moleculea_norm_vec + new_moleculea_tang_vec;
                 // ob.velocity = new_moleculeb_norm_vec + new_moleculeb_tang_vec;
+                println!("new {}: p: {}, v: {}", b.id, b.position, b.velocity);
             }
         });
 

@@ -1,4 +1,4 @@
-use molesim_lib::{Molecules, HEIGHT, WIDTH};
+use molesim_lib::{Molecules, HEIGHT, WIDTH, MOLECULE_RADIUS};
 use eframe::egui::{self};
 
 fn main() {
@@ -37,7 +37,7 @@ impl eframe::App for MyApp {
             for molecule in &self.molecules.molecules {
                 painter.add(egui::Shape::circle_filled(
                     egui::pos2(molecule.position.x as f32, molecule.position.y as f32),
-                    3.0,
+                    MOLECULE_RADIUS as f32,
                     egui::Color32::from_rgb(255, 255, 255),
                 ));
             }
