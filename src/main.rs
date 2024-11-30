@@ -1,6 +1,8 @@
 use molesim_lib::{Molecules, HEIGHT, WIDTH, MOLECULE_RADIUS};
 use eframe::egui::{self};
 
+pub const MOLECULE_DISPLAY_RADIUS: f64 = 5.0;
+
 fn main() {
     // Log to stdout (if you run with `RUST_LOG=debug`).
     tracing_subscriber::fmt::init();
@@ -17,13 +19,13 @@ fn main() {
 }
 
 struct MyApp {
-    molecules: Molecules,
+    simulation: Molecules, // ! used to be called 'molecules'
 }
 
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            molecules: Molecules::new(),
+            simulation: Molecules::new(),
         }
     }
 }
@@ -32,14 +34,17 @@ impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             self.molecules.next();
+
             ui.heading("Molecule Simulator");
             let painter = ui.painter();
-            for molecule in &self.molecules.molecules {
-                painter.add(egui::Shape::circle_filled(
-                    egui::pos2(molecule.position.x as f32, molecule.position.y as f32),
-                    MOLECULE_RADIUS as f32,
-                    egui::Color32::from_rgb(255, 255, 255),
-                ));
+            for molecule in &self.simulation.molecules {
+                if 0 < molecule.x  && 1028.0 > molecule.x && 0 < molecule.x  && 1028.0 > molecule.x {
+                    painter.add(egui::Shape::circle_filled(
+                        egui::pos2(molecule.position.x as f32, molecule.position.y as f32),
+                        MOLECULE_DISPLAY_RADIUS as f32,
+                        egui::Color32::from_rgb(255, 255, 255),
+                    ));
+                }
             }
         });
         ctx.request_repaint();
