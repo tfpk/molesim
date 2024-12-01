@@ -10,8 +10,8 @@ use rayon::prelude::*;
 
 use glam::DVec2;
 
-pub const WIDTH: f64 = 20000.0;
-pub const HEIGHT: f64 = 20000.0;
+pub const WIDTH: f64 = 1920.0;
+pub const HEIGHT: f64 = 1080.0;
 
 pub const NUM_MOLECULES: usize = 200;
 pub const MOLECULE_SPEED: f64 = 10.0;
